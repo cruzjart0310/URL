@@ -16,3 +16,23 @@ https://librosweb.es/libro/javascript/
 https://www.sitepoint.com/php/apis-php/
 http://vis.usal.es/rodrigo/documentos/soa/REST%20avanzado.pdf
 https://laravel.montogeek.com/5.0/eloquent
+
+
+
+[
+    [
+        {
+            "name": "SUPERADMINISTRADOR",
+            "team_id": 1
+        },
+        {
+            "name": "SUPERADMINISTRADOR",
+            "team_id": 2
+        }
+    ]
+]
+
+ $users = User::join('team_user', 'users.id', '=', 'team_user.user_id')
+                    ->where('users.id' ,'=', $user->id)
+                    ->select('users.name','team_user.team_id')
+                    ->get();

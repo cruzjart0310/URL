@@ -18,22 +18,3 @@ http://vis.usal.es/rodrigo/documentos/soa/REST%20avanzado.pdf
 https://laravel.montogeek.com/5.0/eloquent
 https://styde.net/reglas-de-validacion-personalizadas-en-laravel/
 http://www.codigojavalibre.com/2017/07/como-eliminar-archivos-si-existe-desde-desde-una-carpeta-publica-en-laravel.html
-
-
-[
-    [
-        {
-            "name": "SUPERADMINISTRADOR",
-            "team_id": 1
-        },
-        {
-            "name": "SUPERADMINISTRADOR",
-            "team_id": 2
-        }
-    ]
-]
-
- $users = User::join('team_user', 'users.id', '=', 'team_user.user_id')
-                    ->where('users.id' ,'=', $user->id)
-                    ->select('users.name','team_user.team_id')
-                    ->get();

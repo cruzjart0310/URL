@@ -18,3 +18,65 @@ http://vis.usal.es/rodrigo/documentos/soa/REST%20avanzado.pdf
 https://laravel.montogeek.com/5.0/eloquent
 https://styde.net/reglas-de-validacion-personalizadas-en-laravel/
 http://www.codigojavalibre.com/2017/07/como-eliminar-archivos-si-existe-desde-desde-una-carpeta-publica-en-laravel.html
+public static string ConvertToJson<T>(this T objeto) where T: class
+        {
+            string json = string.Empty;
+            using (MemoryStream memoeryStream = new MemoryStream())
+            {
+                new DataContractJsonSerializer(objeto.GetType()).WriteObject((Stream)memoeryStream, (object)objeto);
+                json = Encoding.UTF8.GetString(memoeryStream.ToArray());
+            }
+
+            return json;
+        }
+
+        public static T ConvertToEntity<T>(this string json) where T: class
+        {
+            using (MemoryStream memoryStream = new MemoryStream(Encoding.UTF8.GetBytes(json.ToCharArray())))
+                return (T)new DataContractJsonSerializer(typeof(T)).ReadObject((Stream)memoryStream);
+        }
+
+        public static string LimpiarCadena(this string cadena)
+        {
+            return string.IsNullOrWhiteSpace(cadena) ? string.Empty : Regex.Replace(cadena.Trim().Replace("\n", string.Empty), @"\u000a+", string.Empty, RegexOptions.IgnoreCase);
+        }
+
+        public static string FormatDate(this string fecha, string format)
+        {
+            CultureInfo cultureInfo = CultureInfo.CreateSpecificCulture("es-MX");
+            return DateTime.Parse(fecha, cultureInfo).ToString(format, cultureInfo);
+        }
+
+        public static DateTime FormatDateTime(this string fecha, string format)
+        {
+            DateTime fechaO;
+            fechaO = DateTime.TryParseExact(fecha, format, CultureInfo.CreateSpecificCulture("es-MX"), DateTimeStyles.None, out fechaO) ? fechaO : default(DateTime);
+            return fechaO;
+        }
+
+        public static int ConverToInt(this string dato)
+        {
+            int num;
+            int.TryParse(dato, out num);
+            return num;
+        }
+
+        public static void CopyTo<E, S>(this E entrada, S salida) where E : class where S : class
+        {
+            Type type = entrada.GetType();
+
+            PropertyInfo[] pEntrdad = entrada.GetType().GetProperties();
+            PropertyInfo[] pSalida = salida.GetType().GetProperties();
+
+            foreach (var item in pEntrdad)
+            {
+                if (salida.GetType().GetProperties().ToList().Find(x => x.Name == item.Name) != null)
+                {
+                    var destinoPropiedad = pSalida.First(x => x.Name == item.Name);
+                    if (destinoPropiedad.PropertyType == item.PropertyType)
+                    {
+                        destinoPropiedad.SetValue(salida, item.GetValue(entrada, null), null);
+                    }
+                }
+            }
+        }
